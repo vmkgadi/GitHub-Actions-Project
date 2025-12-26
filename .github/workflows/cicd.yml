@@ -5,10 +5,23 @@ on:
     branches: [ "main" ]
 
 jobs:
-  compile:
-
+  maven-installation:
+    
     runs-on: self-hosted
-
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: MVN Install
+      run: |
+        sudo apt update && sudo apt upgrade -y 
+        sudo apt install openjdk-17-jdk -y 
+        sudo apt install maven -y
+        mvn --version
+        
+  compile:
+    
+    runs-on: self-hosted
+      
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
