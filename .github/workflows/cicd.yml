@@ -126,7 +126,7 @@ jobs:
       - name: Deploy to AKS 
         uses: azure/k8s-deploy@v4 
         with: 
-         manifests: src/ds.yml
+         manifests: ds.yml
     
 
   
