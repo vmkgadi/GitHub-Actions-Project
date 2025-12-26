@@ -5,19 +5,29 @@ on:
     branches: [ "main" ]
 
 jobs:       
-  test:
+  compile:
     
     runs-on: self-hosted
 
     steps:
     - uses: actions/checkout@v4
-    - name: unit test cases
+    - name: compilation
+      run: mvn compile
+
+  test:
+    
+    runs-on: self-hosted
+    needs: compile
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: unit test
       run: mvn test
 
   security-check:
 
     runs-on: self-hosted
-    needs: compile
+    needs: test
 
     steps:
     - uses: actions/checkout@v4
@@ -31,10 +41,10 @@ jobs:
     - name: Gitleaks Code Scan
       run: gitleaks detect source . -r gitleaksreport.json -f json
 
-  compile:
+  package:
     
     runs-on: self-hosted
-    
+    needs: security-check
     steps:
     - uses: actions/checkout@v4
     - name: Build with Maven
@@ -42,7 +52,7 @@ jobs:
 
   sonarqube:
     runs-on: self-hosted
-    needs: test
+    needs: package
     
     steps:
     - uses: actions/checkout@v4
